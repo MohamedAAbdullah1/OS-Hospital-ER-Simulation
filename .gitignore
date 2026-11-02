@@ -1,0 +1,3 @@
+# Compiled Java files
+*.class
+out/
