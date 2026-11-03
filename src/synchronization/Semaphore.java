@@ -52,8 +52,7 @@ public class Semaphore {
     }
 
     public synchronized void release(){
-
         permit++;
-        notifyAll();
+        notify();
     }
 }
