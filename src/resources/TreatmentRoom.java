@@ -7,11 +7,11 @@ public class TreatmentRoom {
     private final Semaphore rooms;
 
     public TreatmentRoom() {
-        rooms = new Semaphore(2); // cuz there are just two seats in the treatment room
+        rooms = new Semaphore(2); 
     }
 
     public boolean acquireRoom() {
-        return rooms.TimeAcquire(3000); // wait 3 sec 
+        return rooms.TimeAcquire(3000); 
     }
 
     public void releaseRoom() {
