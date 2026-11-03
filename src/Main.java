@@ -1,5 +1,9 @@
+import entities.Patient;
+import resources.WaitingRoom;
+
 public class Main {
-    void main(String[] args){
+
+    public static void main(String[] args) throws InterruptedException {
 
     }
 }
