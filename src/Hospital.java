@@ -1,9 +1,6 @@
-import entities.Patient;
-import resources.WaitingRoom;
-
-public class Main {
+public class Hospital {
 
     public static void main(String[] args) throws InterruptedException {
-
+        
     }
 }
