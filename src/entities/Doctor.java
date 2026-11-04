@@ -5,21 +5,28 @@ import resources.TreatmentRoom;
 import resources.WaitingRoom;
 
 import java.util.Random;
+import java.util.function.Consumer;
 
 public class Doctor extends Thread {
 
     private final int doctorId;
     private final WaitingRoom waitingRoom;
     private final TreatmentRoom treatmentRoom;
+    private final Consumer<String> events;
 
     private final Random random = new Random();
 
     public Doctor(int doctorId, WaitingRoom waitingRoom,
                   TreatmentRoom treatmentRoom) {
+        this(doctorId, waitingRoom, treatmentRoom, System.out::println);
+    }
 
+    public Doctor(int doctorId, WaitingRoom waitingRoom,
+                  TreatmentRoom treatmentRoom, Consumer<String> events) {
         this.doctorId = doctorId;
         this.waitingRoom = waitingRoom;
         this.treatmentRoom = treatmentRoom;
+        this.events = events;
     }
 
     @Override
@@ -33,12 +40,12 @@ public class Doctor extends Thread {
                 break;
             }
 
-            System.out.println(
+            events.accept(
                     "Doctor " + doctorId +
                             " is assigned to " + patient.getPatientId()
             );
 
-            System.out.println(
+            events.accept(
                     "Doctor " + doctorId +
                             " is trying to acquire a treatment room."
             );
@@ -48,19 +55,19 @@ public class Doctor extends Thread {
             if (roomAcquired) {
                 boolean treatmentCompleted = false;
                 try {
-                    System.out.println(
+                    events.accept(
                             "Doctor " + doctorId +
                                     " acquired a treatment room."
                     );
 
-                    System.out.println(
+                    events.accept(
                             "Doctor " + doctorId +
                                     " begins treating " + patient.getPatientId()
                     );
 
                     Thread.sleep(1000 + random.nextInt(2000));
 
-                    System.out.println(
+                    events.accept(
                             "Doctor " + doctorId +
                                     " finished treating " + patient.getPatientId()
                     );
@@ -74,7 +81,7 @@ public class Doctor extends Thread {
 
                     treatmentRoom.releaseRoom();
 
-                    System.out.println(
+                    events.accept(
                             "Doctor " + doctorId +
                                     " released the treatment room."
                     );
@@ -84,7 +91,7 @@ public class Doctor extends Thread {
                 if (treatmentCompleted) {
                     patient.setTreated();
 
-                    System.out.println(
+                    events.accept(
                             "Doctor " + doctorId + " is now available."
                     );
                 } else {
@@ -93,12 +100,12 @@ public class Doctor extends Thread {
 
             } else {
 
-                System.out.println(
+                events.accept(
                         "Doctor " + doctorId +
                                 " could not acquire a treatment room."
                 );
 
-                System.out.println(
+                events.accept(
                         "Doctor " + doctorId +
                                 " is sending " + patient.getPatientId() +
                                 " back to the waiting room."
@@ -106,7 +113,7 @@ public class Doctor extends Thread {
 
                 waitingRoom.addPatient(patient);
 
-                System.out.println(
+                events.accept(
                         "Doctor " + doctorId + " is now available."
                 );
             }

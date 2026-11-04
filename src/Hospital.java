@@ -4,6 +4,7 @@ import resources.TreatmentRoom;
 import resources.WaitingRoom;
 
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 public class Hospital {
 
@@ -19,6 +20,15 @@ public class Hospital {
         numberOfPatients = sc.nextInt();
 
 
+        runSimulation(waitingRoomCapacity, numberOfDoctors, numberOfPatients, System.out::println);
+    }
+
+    public static void runSimulation(int waitingRoomCapacity, int numberOfDoctors,
+                                     int numberOfPatients, Consumer<String> events)
+            throws InterruptedException {
+        if (waitingRoomCapacity < 1 || numberOfDoctors < 1 || numberOfPatients < 1) {
+            throw new IllegalArgumentException("All values must be at least 1.");
+        }
         WaitingRoom waitingRoom = new WaitingRoom(waitingRoomCapacity);
         TreatmentRoom treatmentRoom = new TreatmentRoom();
 
@@ -26,10 +36,10 @@ public class Hospital {
         Patient[] patients = new Patient[numberOfPatients];
 
         for (int i = 0;i < numberOfDoctors;i++) {
-            doctors[i] = new Doctor(i+1, waitingRoom,treatmentRoom);
+            doctors[i] = new Doctor(i+1, waitingRoom,treatmentRoom, events);
         }
         for (int i = 0;i < numberOfPatients;i++) {
-            patients[i] = new Patient("P" + (i+1), waitingRoom);
+            patients[i] = new Patient("P" + (i+1), waitingRoom, events);
         }
 
         for (int i = 0;i < numberOfDoctors;i++) {
@@ -51,5 +61,6 @@ public class Hospital {
         for (int i = 0;i < numberOfDoctors;i++) {
             doctors[i].join();
         }
+        events.accept("Simulation complete. All patients have been treated.");
     }
 }
